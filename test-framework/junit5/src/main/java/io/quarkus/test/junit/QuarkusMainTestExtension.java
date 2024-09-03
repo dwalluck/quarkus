@@ -93,9 +93,10 @@ public class QuarkusMainTestExtension extends AbstractJvmQuarkusTestExtension
             var result = doJavaStart(context, selectedProfile, arguments);
             //merge all the output into one, strip ansi, then split into lines
             List<String> out = Arrays
-                    .asList(String.join("", filter.captureOutput()).replaceAll("\\u001B\\[(.*?)[a-zA-Z]", "").split("\n"));
+                    .asList(String.join("", filter.captureOutput()).replaceAll("\\u001B\\[(.*?)[a-zA-Z]", "").split("\\r?\\n"));
             List<String> err = Arrays
-                    .asList(String.join("", filter.captureErrorOutput()).replaceAll("\\u001B\\[(.*?)[a-zA-Z]", "").split("\n"));
+                    .asList(String.join("", filter.captureErrorOutput()).replaceAll("\\u001B\\[(.*?)[a-zA-Z]", "")
+                            .split("\\r?\\n"));
             return new LaunchResult() {
                 @Override
                 public List<String> getOutputStream() {

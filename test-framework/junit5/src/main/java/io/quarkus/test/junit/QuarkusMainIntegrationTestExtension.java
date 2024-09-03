@@ -68,8 +68,8 @@ public class QuarkusMainIntegrationTestExtension extends AbstractQuarkusTestWith
             prepare(context);
         }
         var result = doProcessStart(context, arguments);
-        List<String> out = Arrays.asList(new String(result.getOutput(), StandardCharsets.UTF_8).split("\n"));
-        List<String> err = Arrays.asList(new String(result.getStderror(), StandardCharsets.UTF_8).split("\n"));
+        List<String> out = Arrays.asList(new String(result.getOutput(), StandardCharsets.UTF_8).split("\\r?\\n"));
+        List<String> err = Arrays.asList(new String(result.getStderror(), StandardCharsets.UTF_8).split("\\r?\\n"));
         return new LaunchResult() {
             @Override
             public List<String> getOutputStream() {

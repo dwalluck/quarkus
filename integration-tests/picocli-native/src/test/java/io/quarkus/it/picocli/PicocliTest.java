@@ -14,6 +14,7 @@ import io.quarkus.test.junit.main.Launch;
 import io.quarkus.test.junit.main.LaunchResult;
 import io.quarkus.test.junit.main.QuarkusMainLauncher;
 import io.quarkus.test.junit.main.QuarkusMainTest;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
 @QuarkusMainTest
 @QuarkusTestResource(PicocliTest.TestResource.class)
@@ -63,6 +64,7 @@ public class PicocliTest {
     }
 
     @Test
+    @DisabledIfEnvironmentVariable(named = "OSTYPE", matches = "cygwin")
     public void testIncludeLogCommand(QuarkusMainLauncher launcher) {
         org.jboss.logging.Logger.getLogger("test").error("error");
         LaunchResult result = launcher.launch("with-method-sub-command", "loggingHello", "-n", "World!");
@@ -158,6 +160,22 @@ public class PicocliTest {
         public void stop() {
 
         }
+    }
+
+    @Test
+    @DisabledIfEnvironmentVariable(named = "OSTYPE", matches = "cygwin")
+    public void testHelp(QuarkusMainLauncher launcher) {
+        LaunchResult result = launcher.launch("exitcode", "--help");
+        assertThat(result.exitCode()).isEqualTo(0);
+        assertThat(result.getOutput()).isEqualToIgnoringWhitespace("""
+                Usage: test exitcode [-hV] [--code=<exitCode>]
+                      --code=<exitCode>
+                  -h, --help              Show this help message and exit.
+                  -V, --version           Print version information and exit.""");
+        assertThat(result.getOutputStream()).containsExactly("Usage: test exitcode [-hV] [--code=<exitCode>]",
+                "      --code=<exitCode>",
+                "  -h, --help              Show this help message and exit.",
+                "  -V, --version           Print version information and exit.");
     }
 
 }

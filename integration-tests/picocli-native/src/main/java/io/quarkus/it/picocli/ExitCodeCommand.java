@@ -4,7 +4,7 @@ import java.util.concurrent.Callable;
 
 import picocli.CommandLine;
 
-@CommandLine.Command(name = "exitcode", versionProvider = DynamicVersionProvider.class)
+@CommandLine.Command(name = "exitcode", versionProvider = DynamicVersionProvider.class, mixinStandardHelpOptions = true)
 public class ExitCodeCommand implements Callable<Integer> {
 
     @CommandLine.Option(names = "--code")
