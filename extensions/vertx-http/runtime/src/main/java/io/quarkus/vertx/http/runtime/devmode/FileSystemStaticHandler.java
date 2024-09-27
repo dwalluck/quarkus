@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -129,9 +130,16 @@ public class FileSystemStaticHandler implements Handler<RoutingContext>, Closeab
 
         Path found = null;
         for (Path root : resolvedWebRoots) {
-            Path resolved = root.resolve(path);
-            if (Files.exists(resolved)) {
-                found = resolved;
+            final Path resolved;
+
+            try {
+                resolved = root.resolve(path);
+
+                if (Files.exists(resolved)) {
+                    found = resolved;
+                    break;
+                }
+            } catch (InvalidPathException e) {
                 break;
             }
         }
